@@ -46,7 +46,7 @@
 * **发送协议 (HEX)**：发送 `[4字节hardware_id][0x01]`。
 * **示例报文**：发送 `32 39 37 38 01`，代表 `hardware_id='2978'` 的任务已完成。
 * **后端反馈**：后端收到信号后完成数据库事务，并通过 WS 广播通知前端，最后向助手回传 `32 39 37 38 EE` 闭环确认包。
-* <img width="802" height="696" alt="{6C09BCCF-50C6-4556-B056-D070FDC3A931}" src="https://github.com/user-attachments/assets/0200e4f6-855d-4d2a-9ee4-acaeb1939a6f" />
+
 <img width="1591" height="891" alt="{83B1A474-A932-4C7E-B21F-2189FA3CBDEC}" src="https://github.com/user-attachments/assets/a5787fd5-19d6-4013-b312-1b8e19a913c6" />
 
 <img width="1920" height="876" alt="{72733E9E-774F-41C8-B2AA-A4A96D58B874}" src="https://github.com/user-attachments/assets/1f799917-f065-4876-a42b-3a3cb2e2779d" />
