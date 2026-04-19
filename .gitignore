@@ -7,7 +7,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-
+bge-small-zh-v1.5
 # Virtual environments
 .venv/
 venv/
