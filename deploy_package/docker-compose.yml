@@ -1,0 +1,66 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: agv-mysql
+    restart: unless-stopped
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-PleaseChangeThisRootPassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-oa_backend}
+      MYSQL_USER: ${MYSQL_USER:-agv}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-agv123456}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agv-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8080
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-agv}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-agv123456}
+      DB_NAME: ${MYSQL_DATABASE:-oa_backend}
+      DB_MIN_SIZE: 1
+      DB_MAX_SIZE: 10
+      DB_CHARSET: utf8mb4
+      HARDWARE_HOST: 0.0.0.0
+      HARDWARE_PORT: 13245
+    volumes:
+      - ./backend/media:/app/media
+    expose:
+      - "8080"
+    ports:
+      - "13245:13245"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agv-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  mysql_data:
